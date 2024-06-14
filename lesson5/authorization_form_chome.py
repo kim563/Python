@@ -4,19 +4,24 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+servChrom = ChromeService(ChromeDriverManager().install())
+driver = webdriver.Chrome(service = servChrom)
 
 # Открыть страницу
 driver.get("http://the-internet.herokuapp.com/login")
 
 # Нашли элемент поля ввода и записали в переменную
 username = driver.find_element(By.ID, "username")
-username.send_keys("tomsmith") #Ввод tomsmith
+
+#Ввод tomsmith
+username.send_keys("tomsmith")
 sleep(3)
 
 # Нашли элемент поля ввода и записали в переменную
 password = driver.find_element(By.ID, "password")
-password.send_keys("SuperSecretPassword!") #Ввод SuperSecretPassword!
+
+#Ввод SuperSecretPassword!
+password.send_keys("SuperSecretPassword!")
 sleep(3)
 
 button = driver.find_element(By.CLASS_NAME, "radius")

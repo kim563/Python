@@ -4,13 +4,16 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.by import By
 
-driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+servFF = FirefoxService(GeckoDriverManager().install())
+driver = webdriver.Firefox(service = servFF)
 
 # Откройте страницу
 driver.get("http://the-internet.herokuapp.com/entry_ad")
-
 sleep(2)
 
-driver.find_element(By.CSS_SELECTOR, ".modal-footer > p").click() # Нажимаем на кнопку btn-primary
+# Нашли элемент по CSS селектору
+button = driver.find_element(By.CSS_SELECTOR, ".modal-footer > p")
 
+# Нажимаем на кнопку
+button.click()
 sleep(5)
