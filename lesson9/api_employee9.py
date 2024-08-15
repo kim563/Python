@@ -8,14 +8,18 @@ class Employee:
     def __init__(self, url: str) -> None:
         """
         Инициализация обьекта.
-        
+
         args:
         url - базовый URL для API.
         """
         self.url = url
 
     @allure.step("Получение токена авторизации для пользователя {user}")
-    def get_token(self, user: str='donatello', password: str='does-machines'):
+    def get_token(
+        self,
+        user: str = 'donatello',
+        password: str = 'does-machines'
+    ):
         """
         Авторизация на сайте.
 

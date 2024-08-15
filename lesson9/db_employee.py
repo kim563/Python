@@ -3,19 +3,22 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
 import allure
 
+
 class DataBase:
     """ Класс для работы с базой данных сотрудников и компаний """
 
     __scripts = {
         "select_for_id": text("select * from employee where company_id = :id"),
         "delete_by_id": text("delete from employee where id = :id_to_delete"),
-        "insert_company": text("INSERT INTO company (\"name\") values (:new_name);"),
+        "insert_company": text("INSERT INTO company (\"name\") values \
+                               (:new_name);"),
         "insert_employee": text("INSERT into employee (first_name, \
             last_name, phone, company_id) values (:first_name, \
             :last_name, :phone, :company_id)"),
         "get_max_id": text("select MAX(\"id\") from employee"),
         "get_max_id_company": text("select MAX(\"id\") from company"),
-        "delete_by_id_company": text("delete from company where id =:id_to_delete"),
+        "delete_by_id_company": text("delete from company where id \
+                                     =:id_to_delete"),
     }
 
     def __init__(self, connection_string: str):
@@ -68,7 +71,7 @@ class DataBase:
             result = self.db.execute(sql, {"id": id_company}).fetchall()
             self.db.commit()
             return result
-    
+
     @allure.step("Удаление компании с {id}")
     def delete_company(self, id: int):
         """
@@ -101,7 +104,7 @@ class DataBase:
         )
     def create_employee(
         self, firstname: str, lastname: str, phone: str, company_id: int
-        ):
+    ):
         """
         Создать нового сотрудника.
 

@@ -2,15 +2,20 @@ from .api_employee9 import Employee
 from .db_employee import DataBase
 from faker import Faker
 import allure
+import re
 
 fake = Faker('ru_RU')
 
 api = Employee("https://x-clients-be.onrender.com")
-db = DataBase("postgresql+psycopg2://x_clients_user:95PM5lQE0NfzJWDQmLjbZ45ewrz1fLYa@dpg-cqsr9ulumphs73c2q40g-a.frankfurt-postgres.render.com/x_clients_db_fxd0")
+db = DataBase("postgresql+psycopg2://x_clients_user:\
+              95PM5lQE0NfzJWDQmLjbZ45ewrz1fLYa@dpg-cqsr9ulumphs73c2q40g-a.\
+              frankfurt-postgres.render.com/x_clients_db_fxd0")
 
 
 @allure.title("Получение списка сотрудников")
-@allure.description("Тест проверяет получение списка сотрудников с использованием API и сравнение с данными из базы данных.")
+@allure.description("Тест проверяет получение списка \
+                    сотрудников с использованием API и \
+                    сравнение с данными из базы данных.")
 @allure.feature("Сотрудники")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.step("Тестирование получения сотрудников")
@@ -24,14 +29,17 @@ def test_get_employee():
         api_result = api.get_employee_list({'company': company_id})
     with allure.step("Получение списка сотрудников из базы данных"):
         db_result = db.get_employee_list(company_id)
-    
+
     with allure.step("Удаление компании"):
         db.delete_company(company_id)
     with allure.step("Сравнение количества сотрудников"):
         assert len(api_result.json()) == len(db_result)
 
+
 @allure.title("Добавление нового сотрудника")
-@allure.description("Тест проверяет добавление нового сотрудника через API и проверку его наличия в списке сотрудников.")
+@allure.description("Тест проверяет добавление нового \
+                    сотрудника через API и проверку его \
+                    наличия в списке сотрудников.")
 @allure.feature("Сотрудники")
 @allure.severity(allure.severity_level.BLOCKER)
 @allure.step("Тестирование добавления сотрудника")
@@ -53,7 +61,7 @@ def test_add_employee():
             "companyId": company_id,
             "email": fake.ascii_free_email(),
             "url": fake.uri(),
-            "phone": fake.phone_number(),
+            "phone": re.sub('\\D', '', fake.phone_number()),
             "birthdate": fake.iso8601(),
             "isActive": True
         }
@@ -74,7 +82,8 @@ def test_add_employee():
     with allure.step("Удаление созданной компании"):
         db.delete_company(company_id)
 
-    with allure.step("Сравнение длины списков и проверка данных нового сотрудника"):
+    with allure.step("Сравнение длины списков и проверка \
+                     данных нового сотрудника"):
         assert len_after - len_before == 1
         for employee in resp.json():
             if employee["id"] == user_id:
@@ -82,8 +91,10 @@ def test_add_employee():
                 assert employee["lastName"] == body["lastName"]
                 assert employee["middleName"] == body["middleName"]
 
+
 @allure.title("Получение сотрудника по id")
-@allure.description("Тест проверяет получение сотрудника по ID через API и сравнение с данными в базе данных.")
+@allure.description("Тест проверяет получение сотрудника по ID \
+                    через API и сравнение с данными в базе данных.")
 @allure.feature("Сотрудники")
 @allure.severity(allure.severity_level.MINOR)
 @allure.step("Тестирование получения сотрудника по его ID")
@@ -96,7 +107,7 @@ def test_get_employee_id():
         body = {
             "firstName": fake.first_name(),
             "lastName": fake.last_name(),
-            "phone": fake.phone_number()
+            "phone": re.sub('\\D', '', fake.phone_number())
         }
 
     with allure.step("Создание сотрудника в базе данных"):
@@ -121,8 +132,10 @@ def test_get_employee_id():
         assert resp.json()["firstName"] == body["firstName"]
         assert resp.json()["lastName"] == body["lastName"]
 
+
 @allure.title("Изменение данных о сотруднике")
-@allure.description("Тест проверяет изменение данных сотрудника через API и проверку обновленных данных.")
+@allure.description("Тест проверяет изменение данных сотрудника \
+                    через API и проверку обновленных данных.")
 @allure.feature("Сотрудники")
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.step("Тестирование обновления данных сотрудника")
@@ -135,7 +148,7 @@ def test_update_employee():
         body = {
             "firstName": fake.first_name(),
             "lastName": fake.last_name(),
-            "phone": fake.phone_number()
+            "phone": re.sub('\\D', '', fake.phone_number())
         }
 
     with allure.step("Создание сотрудника в базе данных"):
@@ -153,7 +166,7 @@ def test_update_employee():
             "lastName": fake.last_name(),
             "email": fake.ascii_free_email(),
             "url": fake.uri(),
-            "phone": fake.phone_number(),
+            "phone": re.sub('\\D', '', fake.phone_number()),
             "isActive": True
         }
 
